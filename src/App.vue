@@ -5,8 +5,9 @@
 <template>
   <main>
     <div class="wrapper">
-      <h1>Home</h1>
+      <h1>Gestion de Concert</h1>
       <router-link to="/concerts">concerts</router-link>
+      <router-view></router-view>
     </div>
   </main>
 </template>
