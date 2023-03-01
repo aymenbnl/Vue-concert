@@ -7,6 +7,8 @@
     <div class="wrapper">
       <h1>Gestion de Concert</h1>
       <router-link to="/concerts">concerts</router-link>
+      <router-link to="/salles">salles</router-link>
+      <router-link to="/soirees">soirees</router-link>
       <router-view></router-view>
     </div>
   </main>
