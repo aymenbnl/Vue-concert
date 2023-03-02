@@ -15,11 +15,12 @@
         <td>{{c.date}}</td>
         <td>{{c.heureDebut}}</td>
         <td>{{c.heureFin}}</td>
-        <td v-if="propsModeConnecte === true"><a href="#" @click="this.handleDelConcert(c.id_concert)">del</a></td>
+        <td v-if="propsUser !== {}"><a href="#" @click="this.handleDelConcert(c.id_concert)">del</a></td>
+        <td v-if="propsUser !== {}"><a href="#" @click="this.handleResConcert(c.id_concert)">reserve</a></td>
       </tr>
     </tbody>
   </table>
-  <p v-if="propsModeConnecte === true"><a href="#" @click="this.handleAddConcert()">add</a></p>
+  <p v-if="propsUser !== {}"><a href="#" @click="this.handleAddConcert()">add</a></p>
 </template>
 
 <script>
@@ -28,7 +29,7 @@
           propsConcerts: Array,
           propsModeConnecte: {
             type: Boolean,
-            default: true,
+            default: false,
           },
           propsUser: Object
         },
@@ -52,6 +53,21 @@
                 "soiree": {
                   "id_soiree": 1
                 }
+              })
+            })
+          },
+          handleResConcert(id) {
+            console.log("user: " + this.propsUser)
+            console.log(this.propsModeConnecte)
+            fetch ("http://localhost:8080/concert_site_war_exploded/ticket-api/tickets", {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                idUtilisateur: this.propsUser.idUtilisateur,
+                idConcert: id,
               })
             })
           }

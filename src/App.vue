@@ -92,6 +92,7 @@
 				<li><a href="#" @click="handleMenuClick('soirees')">Soirees</a></li>
 				<li><a href="#" @click="handleMenuClick('groupes')">Groupes</a></li>
 				<li><a href="#" @click="handleMenuClick('artistes')">Artistes</a></li>
+        <li v-if="modeConnecte"><a href="#" @click="handleMenuClick('tickets')">tickets</a></li>
 			</ul>
 		</div>
 
