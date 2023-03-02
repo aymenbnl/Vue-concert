@@ -1,4 +1,5 @@
 <template>
+  <concerts v-if="propsOnglet==='concerts'" :propsConcerts="concerts" :modeConnecte="propsConnecte" :estAdmin="estAdmin"></concerts>
   <salles v-if="propsOnglet==='salles'" :propsSalles="salles" :modeConnecte="propsConnecte" :estAdmin="estAdmin"></salles>
   <soirees v-if="propsOnglet==='soirees'" :propsSoirees="soirees" :modeConnecte="propsConnecte" :estAdmin="estAdmin"></soirees>
 	<groupes v-if="propsOnglet==='groupes'" :propsGroupes="groupes" :propsModeConnecte="propsModeConnecte" :propsUser="propsUser"></groupes>
@@ -10,6 +11,7 @@
   import Groupes from './Groupes.vue'
   import Soirees from "@/components/Soirees.vue";
   import Salles from "@/components/Salles.vue";
+  import Concerts from "@/components/Concerts.vue";
     export default {
         name: 'Onglet',
         data() {
@@ -18,6 +20,7 @@
             soirees: [],
             groupes: [],
             artistes: [],
+            concerts: [],
             onglet: this.propsOnglet
           }
         },
@@ -26,7 +29,8 @@
           Artistes,
           Groupes,
           Soirees,
-          Salles
+          Salles,
+          Concerts
         },
         props: {
           propsOnglet: String,
@@ -36,7 +40,11 @@
 
         methods: {
           setData() {
-            if(this.propsOnglet==="salles") {
+            if(this.propsOnglet==="concerts") {
+              fetch('http://localhost:3001/concerts')
+                  .then((response) => response.json())
+                  .then((json) => {this.concerts = json})
+            } else if(this.propsOnglet==="salles") {
               fetch('http://localhost:3001/salles')
                   .then((response) => response.json())
                   .then((json) => {this.salles = json})

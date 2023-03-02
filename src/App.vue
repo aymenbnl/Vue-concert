@@ -28,6 +28,7 @@
 	<div id="main">
 		<div id="gauche">
 			<ul>
+				<li><a href="#" @click="handleMenuClick('concerts')">Concerts</a></li>
 				<li><a href="#" @click="handleMenuClick('salles')">Salles</a></li>
 				<li><a href="#" @click="handleMenuClick('soirees')">Soirees</a></li>
 				<li><a href="#" @click="handleMenuClick('groupes')">Groupes</a></li>
