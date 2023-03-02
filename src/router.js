@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+/*import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
     { path: '/concerts', component: () => import('@/components/ListConcert.vue') },
@@ -10,4 +10,4 @@ const router = createRouter({
 })
 
 
-export default router
+export default router*/
