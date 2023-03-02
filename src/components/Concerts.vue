@@ -15,18 +15,21 @@
         <td>{{c.date}}</td>
         <td>{{c.heureDebut}}</td>
         <td>{{c.heureFin}}</td>
-        <td><a href="#" @click="this.handleDelConcert(c.id_concert)">del</a></td>
+        <td v-if="propsModeConnecte === true"><a href="#" @click="this.handleDelConcert(c.id_concert)">del</a></td>
       </tr>
     </tbody>
   </table>
-  <p><a href="#" @click="this.handleAddConcert()">add</a></p>
+  <p v-if="propsModeConnecte === true"><a href="#" @click="this.handleAddConcert()">add</a></p>
 </template>
 
 <script>
     export default {
         props: {
           propsConcerts: Array,
-          propsModeConnecte: Boolean,
+          propsModeConnecte: {
+            type: Boolean,
+            default: true,
+          },
           propsUser: Object
         },
         methods: {

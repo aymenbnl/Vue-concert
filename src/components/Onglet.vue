@@ -1,5 +1,5 @@
 <template>
-  <concerts v-if="propsOnglet==='concerts'" :propsConcerts="concerts" :modeConnecte="propsConnecte" :estAdmin="estAdmin"></concerts>
+  <concerts v-if="propsOnglet==='concerts'" :propsConcerts="concerts" :propsModeConnecte=false :estAdmin="estAdmin"></concerts>
   <salles v-if="propsOnglet==='salles'" :propsSalles="salles" :modeConnecte="propsConnecte" :estAdmin="estAdmin"></salles>
   <soirees v-if="propsOnglet==='soirees'" :propsSoirees="soirees" :modeConnecte="propsConnecte" :estAdmin="estAdmin"></soirees>
 	<groupes v-if="propsOnglet==='groupes'" :propsGroupes="groupes" :propsModeConnecte="propsModeConnecte" :propsUser="propsUser"></groupes>
