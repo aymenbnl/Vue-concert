@@ -4,17 +4,21 @@
     <thead>
       <tr>
         <th scope="col">id</th>
+        <th scope="col">groupe</th>
         <th scope="col">Date</th>
         <th scope="col">Heure de debut</th>
         <th scope="col">Heure de fin</th>
+        <th scope="col">soiree</th>
       </tr>
     </thead>
     <tbody v-for="c in propsConcerts">
       <tr>
         <td>{{c.id_concert}}</td>
+        <td>{{c.id_groupe}}</td>
         <td>{{c.date}}</td>
         <td>{{c.heureDebut}}</td>
         <td>{{c.heureFin}}</td>
+        <td>{{c.soiree.id_soiree}}</td>
         <td v-if="propsUser !== {}"><a href="#" @click="this.handleDelConcert(c.id_concert)">del</a></td>
         <td v-if="propsUser !== {}"><a href="#" @click="this.handleResConcert(c.id_concert)">reserve</a></td>
       </tr>
