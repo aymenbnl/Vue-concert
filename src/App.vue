@@ -180,7 +180,7 @@
 			</div>
 
 			<div id="contenu">
-				<onglet :propsOnglet="onglet" :propsModeConnecte="modeConnecte" :propsUser="user" :modeAdmin="modeAdmin"></onglet>
+				<onglet :propsOnglet="onglet" :propsConnecte="modeConnecte" :propsUser="user" :modeAdmin="modeAdmin"></onglet>
 			</div>
 
 		</div>

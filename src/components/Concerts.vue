@@ -9,6 +9,7 @@
         <th scope="col">Heure de debut</th>
         <th scope="col">Heure de fin</th>
         <th scope="col">soiree</th>
+        <th scope="col">articles et images</th>
       </tr>
     </thead>
     <tbody v-for="c in propsConcerts">
@@ -19,8 +20,16 @@
         <td>{{c.heureDebut}}</td>
         <td>{{c.heureFin}}</td>
         <td>{{c.soiree.id_soiree}}</td>
+        <td>
+          <ul v-for="art in this.listArticle">
+            <li v-if="art.concert === c.id_concert">{{art.nom}} de {{art.auteurPrenom}} {{art.auteurNom}} ({{art.url}})</li>
+          </ul>
+          <ul v-for="img in this.listImage">
+            <li v-if="img.concert === c.id_concert">{{img.nom}} de {{img.auteurPrenom}} {{img.auteurNom}} ({{img.url}})</li>
+          </ul>
+        </td>
         <td v-if="modeAdmin"><a href="#" @click="this.handleDelConcert(c.id_concert)">del</a></td>
-        <td v-if="propsUser !== {}"><a href="#" @click="this.handleResConcert(c.id_concert)">reserve</a></td>
+        <td v-if="propsModeConnecte"><a href="#" @click="this.handleResConcert(c.id_concert)">reserve</a></td>
       </tr>
     </tbody>
   </table>
@@ -36,23 +45,34 @@
 
 <script>
     export default {
-        props: {
-          propsConcerts: Array,
-          propsModeConnecte: {
-            type: Boolean,
-            default: false,
-          },
-          propsUser: Object,
-          modeAdmin: Boolean,
+      data() {
+        return {
+          listArticle: [],
+          listImage: [],
+        }
+      },
+      props: {
+        propsConcerts: Array,
+        propsModeConnecte: {
+          type: Boolean,
+          default: false,
         },
-        methods: {
-          handleDelConcert(id) {
-            fetch ("http://localhost:3001/concerts/"+id, {
-              method: 'DELETE',
-            })
-          },
-          handleAddConcert() {
-            let concert = {
+        propsUser: Object,
+        modeAdmin: Boolean,
+      },
+      methods: {
+        handleDelConcert(id) {
+          fetch ("http://localhost:3001/concerts/"+id, {
+            method: 'DELETE',
+          })
+        },
+        handleAddConcert() {
+          fetch ("http://localhost:3001/concerts", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
               "date": this.date + "T23:00:00.000+00:00",
               "heureDebut": this.heureDebut + ":00",
               "heureFin": this.heureFin + ":00",
@@ -60,40 +80,42 @@
               "soiree": {
                 "id_soiree": this.soiree
               }
-            }
-            console.log(concert)
-            fetch ("http://localhost:3001/concerts", {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                "date": this.date + "T23:00:00.000+00:00",
-                "heureDebut": this.heureDebut + ":00",
-                "heureFin": this.heureFin + ":00",
-                "id_groupe": this.groupe,
-                "soiree": {
-                  "id_soiree": this.soiree
-                }
-              })
             })
-          },
-          handleResConcert(id) {
-            console.log("user: " + this.propsUser)
-            console.log(this.propsModeConnecte)
-            fetch ("http://localhost:8080/concert_site_war_exploded/ticket-api/tickets", {
-              method: 'POST',
-              mode: 'cors',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                idUtilisateur: this.propsUser.idUtilisateur,
-                idConcert: id,
-              })
+          })
+        },
+        handleResConcert(id) {
+          console.log("user: " + this.propsUser)
+          console.log(this.propsModeConnecte)
+          fetch ("http://localhost:8080/concert_site_war_exploded/ticket-api/tickets", {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              idUtilisateur: this.propsUser.idUtilisateur,
+              idConcert: id,
             })
-          }
+          })
+        },
+        getData() {
+          fetch ("http://localhost:3001/articles")
+              .then((response => response.json()))
+              .then((articles) => {
+                console.log(articles)
+                this.listArticle = articles
+              })
+          fetch ("http://localhost:3001/images")
+              .then((response => response.json()))
+              .then((images) => {
+                console.log(images)
+                this.listImage = images
+              })
         }
+      },
+      created() {
+        this.getData();
+      }
     }
 </script>
 
