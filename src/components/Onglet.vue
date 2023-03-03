@@ -1,9 +1,10 @@
 <template>
-  <concerts v-if="propsOnglet==='concerts'" :propsConcerts="concerts" :propsModeConnecte="propsConnecte" :estAdmin="propsUser"></concerts>
-  <salles v-if="propsOnglet==='salles'" :propsSalles="salles" :modeConnecte="propsConnecte" :estAdmin="propsUser"></salles>
-  <soirees v-if="propsOnglet==='soirees'" :propsSoirees="soirees" :modeConnecte="propsConnecte" :estAdmin="propsUser"></soirees>
+  <concerts v-if="propsOnglet==='concerts'" :propsConcerts="concerts" :propsModeConnecte="propsConnecte" :propsUser="propsUser"></concerts>
+  <salles v-if="propsOnglet==='salles'" :propsSalles="salles" :propsModeConnecte="propsConnecte" :propsUser="propsUser"></salles>
+  <soirees v-if="propsOnglet==='soirees'" :propsSoirees="soirees" :propsModeConnecte="propsConnecte" :propsUser="propsUser"></soirees>
 	<groupes v-if="propsOnglet==='groupes'" :propsGroupes="groupes" :propsModeConnecte="propsConnecte" :propsUser="propsUser"></groupes>
 	<artistes v-if="propsOnglet==='artistes'" :propsArtistes="artistes" :propsModeConnecte="propsConnecte" :propsUser="propsUser"></artistes>
+	<tickets v-if="propsOnglet==='tickets'" :propsTickets="tickets" :propsModeConnecte="propsConnecte" :propsUser="propsUser"></tickets>
 </template>
 
 <script>
@@ -12,6 +13,7 @@
   import Soirees from "@/components/Soirees.vue";
   import Salles from "@/components/Salles.vue";
   import Concerts from "@/components/Concerts.vue";
+  import Tickets from "@/components/Tickets.vue";
     export default {
         name: 'Onglet',
         data() {
@@ -21,11 +23,13 @@
             groupes: [],
             artistes: [],
             concerts: [],
+            tickets: [],
             onglet: this.propsOnglet
           }
         },
 
         components: {
+          Tickets,
           Artistes,
           Groupes,
           Soirees,
@@ -34,7 +38,10 @@
         },
         props: {
           propsOnglet: String,
-          propsConnecte: Boolean,
+          propsConnecte: {
+            type: Boolean,
+            default: false,
+          },
           propsUser: Object
         },
 
@@ -80,6 +87,10 @@
                     });
                   });
               })
+            } else if(this.propsOnglet==="tickets") {
+              fetch("http://localhost:8080/concert_site_war_exploded/ticket-api/tickets")
+                  .then((response) => response.json())
+                  .then((tickets) => this.tickets = tickets);
             }
           }
 
