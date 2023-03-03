@@ -66,28 +66,16 @@
               fetch("http://localhost:8080/concert_site_war_exploded/groupe-artiste-api/groupes")
               .then((response) => response.json())
               .then((groupes) => {
-                    this.groupes=groupes.filter(g => g.listArtiste.length>1)
+                    console.log(groupes)
+                    this.groupes=groupes
                   });
 
             } else if(this.propsOnglet==="artistes") {
-              this.artistes=[]
               fetch("http://localhost:8080/concert_site_war_exploded/groupe-artiste-api/artistes")
               .then((response) => response.json())
               .then((_artistes) => {
 
-                fetch("http://localhost:8080/concert_site_war_exploded/groupe-artiste-api/groupes")
-                  .then((response) => response.json())
-                  .then((groupes) => {
-                    _artistes.forEach((a) => {
-                      if (
-                        groupes.filter(
-                          (g) => g.idGroupe === a.idGroupe && (g.listArtiste.length === 0 || g.listArtiste.length === 1)
-                        ).length === 1
-                      ) {
-                        this.artistes.push(a);
-                      }
-                    });
-                  });
+                this.artistes = _artistes
               })
             } else if(this.propsOnglet==="tickets") {
               fetch("http://localhost:8080/concert_site_war_exploded/ticket-api/tickets")

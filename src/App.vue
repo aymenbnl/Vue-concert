@@ -131,6 +131,8 @@
         this.user = {};
         this.modeConnecte = false;
         this.modeAdmin = false;
+        this.messageErreur=""
+        this.messageOk=""
       },
       getData() {
         fetch("http://localhost:8080/concert_site_war_exploded/ticket-api/utilisateurs")
