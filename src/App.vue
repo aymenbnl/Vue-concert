@@ -11,6 +11,7 @@
 			return {
 				onglet: "groupes",
 				modeConnecte: false,
+        modeAdmin: false,
 				user: {},
         utilisateurs: [],
         admin: [],
@@ -28,7 +29,7 @@
           motDePasse : this.pwd
         }
         console.log(JSON.stringify(user))
-        fetch ("http://localhost:8080/concert-site/ticket-api/utilisateurs", {
+        fetch ("http://localhost:8080/concert_site_war_exploded/ticket-api/utilisateurs", {
           method: 'POST',
           mode: 'cors',
           headers: {
@@ -48,7 +49,7 @@
             this.messageErreur="Login déjà existant"
             this.messageOk=""
           }
-          
+
         })
         .catch(() => {
           this.messageErreur="Problème interne"
@@ -64,7 +65,7 @@
           motDePasse : this.pwd
         }
         console.log(JSON.stringify(user))
-        fetch ("http://localhost:8080/concert-site/ticket-api/utilisateurs/getByLoginAndPassword", {
+        fetch ("http://localhost:8080/concert_site_war_exploded/ticket-api/utilisateurs/getByLoginAndPassword", {
           method: 'POST',
           mode: 'cors',
           headers: {
@@ -73,14 +74,14 @@
           body: JSON.stringify(user)
         })
         .then((response) => {
-          console.log(response);
-          console.log(response.status);
           if(response.status===200) {
-            response.json()
+            this.messageErreur=""
+            this.messageOk="connecte"
           } else {
             this.messageErreur="Informations incorrectes"
             this.messageOk=""
           }
+          return response.json()
         })
         .then((data) => {
           if(data!==undefined) {
@@ -100,21 +101,39 @@
           motDePasse : this.pwd
         }
         console.log(user)
-        fetch ("http://localhost:8080/concert-site/admin-api/admins/1", {
-          method: 'GET',
+        fetch ("http://localhost:8080/concert_site_war_exploded/admin-api/admins/getByLoginAndPassword", {
+          method: 'POST',
           mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(user)
         })
             .then((response) => {
-              console.log(response.status)
+              if(response.status===200) {
+                this.messageErreur=""
+                this.messageOk="connecte"
+              } else {
+                this.messageErreur="Informations incorrectes"
+                this.messageOk=""
+              }
+              return response.json()
+            })
+            .then((data) => {
+              if(data!==undefined) {
+                this.modeAdmin = true;
+                this.modeConnecte = true;
+              }
             })
             .catch(error => console.error("err fetch: $(error.message)"))
       },
       handleDeconnection() {
         this.user = {};
         this.modeConnecte = false;
+        this.modeAdmin = false;
       },
       getData() {
-        fetch("http://localhost:8080/concert-site/ticket-api/utilisateurs")
+        fetch("http://localhost:8080/concert_site_war_exploded/ticket-api/utilisateurs")
             .then((response) => response.json())
             .then((utilisateurs) => {
               this.utilisateurs = utilisateurs;
@@ -145,7 +164,7 @@
 		<div id="droite">
 			<div id="menuConnexion">
 				<div v-if="modeConnecte">
-					<p v-if="user==={}">Administrateur</p>
+					<p v-if="modeAdmin">Administrateur</p>
 					<p v-else>{{user.identifiant}}</p>
           <button id="bt_deco" @click="handleDeconnection">se deconnecter</button>
 				</div>
@@ -161,7 +180,7 @@
 			</div>
 
 			<div id="contenu">
-				<onglet :propsOnglet="onglet" :propsModeConnecte="modeConnecte" :propsUser="user"></onglet>
+				<onglet :propsOnglet="onglet" :propsModeConnecte="modeConnecte" :propsUser="user" :modeAdmin="modeAdmin"></onglet>
 			</div>
 
 		</div>
@@ -198,19 +217,7 @@
 	margin-top: 2em;
 }
 
-#err {
-  display: inline-block;
-  color: red;
-  margin-right: 1em;
-}
-
-#ok {
-  display: inline-block;
-  color: green;
-  margin-right: 1em;
-}
-
-#bt_co, #bt_ins, #ident, #pwd {
+#bt-co {
 	margin-right: 1em;
 }
 </style>

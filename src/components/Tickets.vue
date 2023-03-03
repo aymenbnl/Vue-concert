@@ -33,7 +33,7 @@
           handleDelTicket(id) {
             fetch ("http://localhost:8080/concert_site_war_exploded/ticket-api/tickets/"+id, {
               method: 'DELETE',
-              mode: 'no-cors',
+              mode: 'cors',
             })
           },
         }

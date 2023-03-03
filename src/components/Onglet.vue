@@ -1,10 +1,11 @@
 <template>
-  <concerts v-if="propsOnglet==='concerts'" :propsConcerts="concerts" :propsModeConnecte="propsConnecte" :propsUser="propsUser"></concerts>
-  <salles v-if="propsOnglet==='salles'" :propsSalles="salles" :propsModeConnecte="propsConnecte" :propsUser="propsUser"></salles>
-  <soirees v-if="propsOnglet==='soirees'" :propsSoirees="soirees" :propsModeConnecte="propsConnecte" :propsUser="propsUser"></soirees>
-	<groupes v-if="propsOnglet==='groupes'" :propsGroupes="groupes" :propsModeConnecte="propsConnecte" :propsUser="propsUser"></groupes>
-	<artistes v-if="propsOnglet==='artistes'" :propsArtistes="artistes" :propsModeConnecte="propsConnecte" :propsUser="propsUser"></artistes>
-	<tickets v-if="propsOnglet==='tickets'" :propsTickets="tickets" :propsModeConnecte="propsConnecte" :propsUser="propsUser"></tickets>
+  <button @click="setData">reload</button>
+  <concerts v-if="propsOnglet==='concerts'" :propsConcerts="concerts" :propsModeConnecte="propsConnecte" :propsUser="propsUser" :modeAdmin="modeAdmin"></concerts>
+  <salles v-if="propsOnglet==='salles'" :propsSalles="salles" :propsModeConnecte="propsConnecte" :propsUser="propsUser" :modeAdmin="modeAdmin"></salles>
+  <soirees v-if="propsOnglet==='soirees'" :propsSoirees="soirees" :propsModeConnecte="propsConnecte" :propsUser="propsUser" :modeAdmin="modeAdmin"></soirees>
+	<groupes v-if="propsOnglet==='groupes'" :propsGroupes="groupes" :propsModeConnecte="propsConnecte" :propsUser="propsUser" :modeAdmin="modeAdmin"></groupes>
+	<artistes v-if="propsOnglet==='artistes'" :propsArtistes="artistes" :propsModeConnecte="propsConnecte" :propsUser="propsUser" :modeAdmin="modeAdmin"></artistes>
+	<tickets v-if="propsOnglet==='tickets'" :propsTickets="tickets" :propsModeConnecte="propsConnecte" :propsUser="propsUser" :modeAdmin="modeAdmin"></tickets>
 </template>
 
 <script>
@@ -42,7 +43,8 @@
             type: Boolean,
             default: false,
           },
-          propsUser: Object
+          propsUser: Object,
+          modeAdmin: Boolean,
         },
 
         methods: {
@@ -61,7 +63,7 @@
                   .then((json) => {this.soirees = json})
             } else if(this.propsOnglet==="groupes") {
 
-              fetch("http://localhost:8080/concert-site/groupe-artiste-api/groupes")
+              fetch("http://localhost:8080/concert_site_war_exploded/groupe-artiste-api/groupes")
               .then((response) => response.json())
               .then((groupes) => {
                     this.groupes=groupes.filter(g => g.listArtiste.length>1)
@@ -69,11 +71,11 @@
 
             } else if(this.propsOnglet==="artistes") {
               this.artistes=[]
-              fetch("http://localhost:8080/concert-site/groupe-artiste-api/artistes")
+              fetch("http://localhost:8080/concert_site_war_exploded/groupe-artiste-api/artistes")
               .then((response) => response.json())
               .then((_artistes) => {
 
-                fetch("http://localhost:8080/concert-site/groupe-artiste-api/groupes")
+                fetch("http://localhost:8080/concert_site_war_exploded/groupe-artiste-api/groupes")
                   .then((response) => response.json())
                   .then((groupes) => {
                     _artistes.forEach((a) => {

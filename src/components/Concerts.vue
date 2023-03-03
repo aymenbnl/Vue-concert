@@ -19,12 +19,19 @@
         <td>{{c.heureDebut}}</td>
         <td>{{c.heureFin}}</td>
         <td>{{c.soiree.id_soiree}}</td>
-        <td v-if="propsUser !== {}"><a href="#" @click="this.handleDelConcert(c.id_concert)">del</a></td>
+        <td v-if="modeAdmin"><a href="#" @click="this.handleDelConcert(c.id_concert)">del</a></td>
         <td v-if="propsUser !== {}"><a href="#" @click="this.handleResConcert(c.id_concert)">reserve</a></td>
       </tr>
     </tbody>
   </table>
-  <p v-if="propsUser !== {}"><a href="#" @click="this.handleAddConcert()">add</a></p>
+  <div v-if="modeAdmin">
+    <input type="text" id="groupe" placeholder="identifiant du groupe" v-model="groupe"/><br/>
+    <input type="date" id="date" placeholder="date" v-model="date"/><br/>
+    <input type="time" id="heureDebut" placeholder="heure de debut" v-model="heureDebut"/><br/>
+    <input type="time" id="heureFin" placeholder="heure de fin" v-model="heureFin"/><br/>
+    <input type="text" id="soiree" placeholder="identifiant de la soiree" v-model="soiree"/><br/>
+    <p><a href="#" @click="this.handleAddConcert()">add</a></p>
+  </div>
 </template>
 
 <script>
@@ -35,7 +42,8 @@
             type: Boolean,
             default: false,
           },
-          propsUser: Object
+          propsUser: Object,
+          modeAdmin: Boolean,
         },
         methods: {
           handleDelConcert(id) {
@@ -44,18 +52,28 @@
             })
           },
           handleAddConcert() {
+            let concert = {
+              "date": this.date + "T23:00:00.000+00:00",
+              "heureDebut": this.heureDebut + ":00",
+              "heureFin": this.heureFin + ":00",
+              "id_groupe": this.groupe,
+              "soiree": {
+                "id_soiree": this.soiree
+              }
+            }
+            console.log(concert)
             fetch ("http://localhost:3001/concerts", {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                "date": "2023-03-02T23:00:00.000+00:00",
-                "heureDebut": "13:00:00",
-                "heureFin": "14:30:00",
-                "id_groupe": 1,
+                "date": this.date + "T23:00:00.000+00:00",
+                "heureDebut": this.heureDebut + ":00",
+                "heureFin": this.heureFin + ":00",
+                "id_groupe": this.groupe,
                 "soiree": {
-                  "id_soiree": 1
+                  "id_soiree": this.soiree
                 }
               })
             })
@@ -65,7 +83,7 @@
             console.log(this.propsModeConnecte)
             fetch ("http://localhost:8080/concert_site_war_exploded/ticket-api/tickets", {
               method: 'POST',
-              mode: 'no-cors',
+              mode: 'cors',
               headers: {
                 'Content-Type': 'application/json'
               },
