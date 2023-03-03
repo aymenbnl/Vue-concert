@@ -54,19 +54,19 @@
                   .then((json) => {this.soirees = json})
             } else if(this.propsOnglet==="groupes") {
 
-              fetch("http://localhost:8080/concert_site_war_exploded/groupe-artiste-api/groupes")
+              fetch("http://localhost:8080/concert-site/groupe-artiste-api/groupes")
               .then((response) => response.json())
               .then((groupes) => {
-                    this.groupes=groupes.filter(g => g.listArtiste.length>0)
+                    this.groupes=groupes.filter(g => g.listArtiste.length>1)
                   });
 
             } else if(this.propsOnglet==="artistes") {
               this.artistes=[]
-              fetch("http://localhost:8080/concert_site_war_exploded/groupe-artiste-api/artistes")
+              fetch("http://localhost:8080/concert-site/groupe-artiste-api/artistes")
               .then((response) => response.json())
               .then((_artistes) => {
 
-                fetch("http://localhost:8080/concert_site_war_exploded/groupe-artiste-api/groupes")
+                fetch("http://localhost:8080/concert-site/groupe-artiste-api/groupes")
                   .then((response) => response.json())
                   .then((groupes) => {
                     _artistes.forEach((a) => {

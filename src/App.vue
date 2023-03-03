@@ -14,6 +14,8 @@
 				user: {},
         utilisateurs: [],
         admin: [],
+        messageErreur: "",
+        messageOk: ""
 			}
 		},
 		methods: {
@@ -23,30 +25,73 @@
       handleIncription() {
         let user = {
           identifiant : this.ident,
-          motPasse : this.pwd
+          motDePasse : this.pwd
         }
         console.log(JSON.stringify(user))
-        fetch ("http://localhost:8080/concert_site_war_exploded/ticket-api/utilisateurs", {
+        fetch ("http://localhost:8080/concert-site/ticket-api/utilisateurs", {
           method: 'POST',
-          mode: 'no-cors',
+          mode: 'cors',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(user)
         })
-        this.getData()
+        .then((response) => {
+          console.log(response.status);
+          if(response.status===201) {
+            this.messageOk="Inscription Ok, connectez-vous"
+            this.messageErreur=""
+          } else if(response.status===400) {
+            this.messageErreur="Informations incorrectes"
+            this.messageOk=""
+          } else if(response.status===409) {
+            this.messageErreur="Login déjà existant"
+            this.messageOk=""
+          }
+          
+        })
+        .catch(() => {
+          this.messageErreur="Problème interne"
+            this.messageOk=""
+            throw "erreur"
+        })
+
       },
+
       handleConnection() {
-        console.log(this.ident)
-        console.log(this.pwd)
-        console.log(this.utilisateurs)
-        this.utilisateurs.map((utilisateur) => {
-          console.log(utilisateur)
-          if (utilisateur.identifiant === this.ident && utilisateur.motPasse === this.pwd) {
-            console.log("connection ok")
-            this.user = utilisateur;
+        let user = {
+          identifiant : this.ident,
+          motDePasse : this.pwd
+        }
+        console.log(JSON.stringify(user))
+        fetch ("http://localhost:8080/concert-site/ticket-api/utilisateurs/getByLoginAndPassword", {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(user)
+        })
+        .then((response) => {
+          console.log(response);
+          console.log(response.status);
+          if(response.status===200) {
+            response.json()
+          } else {
+            this.messageErreur="Informations incorrectes"
+            this.messageOk=""
+          }
+        })
+        .then((data) => {
+          if(data!==undefined) {
+            this.user.identifiant=data.identifiant
+            this.user.motDePasse=data.motDePasse
             this.modeConnecte = true;
           }
+        })
+        .catch(() => {
+            this.messageErreur="Problème interne"
+            this.messageOk=""
         })
       },
       handleCoAdmin() {
@@ -55,9 +100,9 @@
           motDePasse : this.pwd
         }
         console.log(user)
-        fetch ("http://localhost:8080/concert_site_war_exploded/admin-api/admins/1", {
+        fetch ("http://localhost:8080/concert-site/admin-api/admins/1", {
           method: 'GET',
-          mode: 'no-cors',
+          mode: 'cors',
         })
             .then((response) => {
               console.log(response.status)
@@ -69,7 +114,7 @@
         this.modeConnecte = false;
       },
       getData() {
-        fetch("http://localhost:8080/concert_site_war_exploded/ticket-api/utilisateurs")
+        fetch("http://localhost:8080/concert-site/ticket-api/utilisateurs")
             .then((response) => response.json())
             .then((utilisateurs) => {
               this.utilisateurs = utilisateurs;
@@ -104,9 +149,11 @@
           <button id="bt_deco" @click="handleDeconnection">se deconnecter</button>
 				</div>
 				<div v-else>
-          <input type="text" id="ident" v-model="ident"/>
-          <input type="text" id="pwd" v-model="pwd"/>
-					<button id="bt-co" @click="handleConnection">Se connecter</button>
+          <p id="err" v-if="messageErreur!==''">{{ messageErreur }}</p>
+          <p id="ok" v-if="messageOk!==''">{{ messageOk }}</p>
+          <input type="text" id="ident" placeholder="Login" v-model="ident"/>
+          <input type="password" id="pwd" placeholder="Mot de passe" v-model="pwd"/>
+					<button id="bt_co" @click="handleConnection">Se connecter</button>
 					<button id="bt_ins" @click="handleIncription">S'inscrire</button>
           <button id="bt_co_admin" @click="handleCoAdmin">se connecter en administrateur</button>
 				</div>
@@ -150,7 +197,19 @@
 	margin-top: 2em;
 }
 
-#bt-co {
+#err {
+  display: inline-block;
+  color: red;
+  margin-right: 1em;
+}
+
+#ok {
+  display: inline-block;
+  color: green;
+  margin-right: 1em;
+}
+
+#bt_co, #bt_ins, #ident, #pwd {
 	margin-right: 1em;
 }
 </style>
